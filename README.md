@@ -271,6 +271,79 @@ flash()->warning('This is a warning message.');
 flash()->success('Custom message with options.', ['timeout' => 3000, 'position' => 'bottom-left']);
 ```
 
+### Using presets
+
+Define a preset in your `config/flasher.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Flasher\Prime\Configuration;
+
+return Configuration::from([
+    // ... other configurations
+
+    'presets' => [
+        'entity_saved' => [
+            'type' => 'success',
+            'title' => 'Entity Saved',
+            'message' => 'The entity has been saved successfully.',
+        ],
+        'entity_deleted' => [
+            'type' => 'warning',
+            'title' => 'Entity Deleted',
+            'message' => 'The entity has been deleted.',
+        ],
+    ],
+]);
+```
+
+Use the preset in your controller:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Controller;
+
+class BookController extends Controller
+{
+    /**
+     * Save a new book entity.
+     *
+     * @return RedirectResponse
+     */
+    public function saveBook(): RedirectResponse
+    {
+        // Your saving logic here (e.g., validating and storing the book)
+
+        // Trigger the 'entity_saved' preset
+        flash()->preset('entity_saved');
+
+        return redirect()->route('books.index');
+    }
+
+    /**
+     * Delete an existing book entity.
+     *
+     * @return RedirectResponse
+     */
+    public function deleteBook(): RedirectResponse
+    {
+        // Your deletion logic here (e.g., finding and deleting the book)
+
+        // Trigger the 'entity_deleted' preset
+        flash()->preset('entity_deleted');
+
+        return redirect()->route('books.index');
+    }
+}
+```
+
 ## Adapters Overview
 
 PHPFlasher supports various adapters to integrate seamlessly with different frontend libraries. Below is an overview of available adapters for Laravel:
